@@ -53,3 +53,18 @@ smtpserver.ehlo
 smtpserver.login(sender, password)
 smtpserver.sendmail(sender, receiver, msgRoot.as_string())
 smtpserver.close()
+
+class Transporter:
+    """ Transporter """
+    def __init__(self):
+        """ init function """
+
+    def build_message_text(self):
+        """ build_message_text """
+
+    def add_images(self):
+        """ add_images """
+
+    def send_it(self):
+        """ send it """
+        
