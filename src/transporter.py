@@ -47,17 +47,14 @@ from email.mime.image import MIMEImage
 # msgAlternative.attach(msgText)
 
 # smtpserver = smtplib.SMTP("smtp.gmail.com", 587)
-# smtpserver.ehlo()
-# smtpserver.starttls()
-# smtpserver.ehlo
-# smtpserver.login(sender, password)
-# smtpserver.sendmail(sender, receiver, msgRoot.as_string())
-# smtpserver.close()
 
 class Transporter:
     """ Transporter """
-    def __init__(self):
+    def __init__(self, from_address=None, to_address=None, user_password=None):
         """ init function """
+        self.sender = from_address
+        self.receiver = to_address
+        self.password = user_password
 
     def build_message_text(self):
         """ build_message_text """
@@ -67,4 +64,12 @@ class Transporter:
 
     def send_it(self):
         """ send it """
-        
+        self.smtp_server.ehlo()
+        self.smtp_server.starttls()
+        self.smtp_server.ehlo()
+        self.smpt_server.login(self.sender, self.password)
+        self.smpt_server.sendmail(self.sender,
+                                  self.receiver,
+                                  self.msg_text.as_string())
+        self.smtp_server.close()
+
