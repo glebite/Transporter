@@ -1,3 +1,6 @@
+"""
+transporter - a specific type of emailer class
+"""
 #!/usr/bin/env python
 
 # Send an HTML email with an embedded image and a plain text message for
@@ -50,24 +53,24 @@ class Transporter:
         self.sender = from_address
         self.receiver = to_address
         self.password = user_password
-        self.msg_text = MIMEMulitpart('related')
+        self.msg_text = MIMEMultipart('related')
 
     def build_message_text(self, subject_text=None,
                            preamble_text=None,
                            string_message=None):
         """ build_message_text """
 
-    def add_images(self):
+    def add_images(self, images=None):
         """ add_images """
 
     def send_it(self):
         """ send it """
-        self.smtp_server.ehlo()
-        self.smtp_server.starttls()
-        self.smtp_server.ehlo()
-        self.smpt_server.login(self.sender, self.password)
-        self.smpt_server.sendmail(self.sender,
-                                  self.receiver,
-                                  self.msg_text.as_string())
-        self.smtp_server.close()
-
+        smtp_server = smptlib.SMTP('smtp.gmail.com', 587)
+        smtp_server.ehlo()
+        smtp_server.starttls()
+        smtp_server.ehlo()
+        smpt_server.login(self.sender, self.password)
+        smpt_server.sendmail(self.sender,
+                             self.receiver,
+                             self.msg_text.as_string())
+        smtp_server.close()
