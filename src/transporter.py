@@ -8,11 +8,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 
-# # Define these once; use them twice!
-# strFrom = sys.argv[2]
-# strTo = sys.argv[3]
-# password = sys.argv[4]
-
 # # Create the root message and fill in the from, to, and subject headers
 # msgRoot = MIMEMultipart('related')
 # msgRoot['Subject'] = sys.argv[1]
@@ -55,8 +50,11 @@ class Transporter:
         self.sender = from_address
         self.receiver = to_address
         self.password = user_password
+        self.msg_text = MIMEMulitpart('related')
 
-    def build_message_text(self):
+    def build_message_text(self, subject_text=None,
+                           preamble_text=None,
+                           string_message=None):
         """ build_message_text """
 
     def add_images(self):
