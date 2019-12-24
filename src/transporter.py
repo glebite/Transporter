@@ -53,23 +53,26 @@ class Transporter:
         self.sender = from_address
         self.receiver = to_address
         self.password = user_password
+        self.string_message = ""        
         self.msg_text = MIMEMultipart('related')
 
     def build_message_text(self, subject_text=None,
                            preamble_text=None,
                            string_message=None):
         """ build_message_text """
-        self.string_message = ""
         self.string_message += string_message
 
     def add_images(self, images=None):
         """ add_images """
         counter = 0
         for image_name in images:
-            self.string_message += '<img src='cid:image{}"><br>'.format(counter)
-            fp = open(image_name,'rb')
-            msgImage = MIMEImage(fp.read(), _subtype="jpg")
-            fp.close
+            self.string_message += '<img src="cid:image{}"><br>'.format(counter)
+            file_pointer = open(image_name, 'rb')
+            msg_image = MIMEImage(file_pointer.read(), _subtype="jpg")
+            file_pointer.close
+            msg_image.add_header('Content-ID', '<image{}>'.format(counter))
+            self.msg_text.attach(msg_image)
+            counter += 1
 
     def send_it(self):
         """ send it """
