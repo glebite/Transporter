@@ -59,9 +59,17 @@ class Transporter:
                            preamble_text=None,
                            string_message=None):
         """ build_message_text """
+        self.string_message = ""
+        self.string_message += string_message
 
     def add_images(self, images=None):
         """ add_images """
+        counter = 0
+        for image_name in images:
+            self.string_message += '<img src='cid:image{}"><br>'.format(counter)
+            fp = open(image_name,'rb')
+            msgImage = MIMEImage(fp.read(), _subtype="jpg")
+            fp.close
 
     def send_it(self):
         """ send it """
