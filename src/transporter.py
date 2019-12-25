@@ -5,7 +5,7 @@ transporter - a specific type of emailer class
 
 # Send an HTML email with an embedded image and a plain text message for
 # email clients that don't want to display the HTML.
-import smtplib
+from smtplib import SMTP
 import sys
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -29,17 +29,6 @@ from email.mime.image import MIMEImage
 # msgAlternative.attach(msgText)
 
 # string_message = 'Security images.'
-# counter = 0
-# for image_name in sys.argv[5:]:
-#     print('Working on image: ' + image_name)
-#     # We reference the image in the IMG SRC attribute by the ID we give it below
-#     string_message += '<img src="cid:image{}"><br>'.format(counter)
-#     fp = open(image_name,'rb')
-#     msgImage = MIMEImage(fp.read(), _subtype="jpg")
-#     fp.close()
-#     msgImage.add_header('Content-ID', '<image{}>'.format(counter))
-#     msgRoot.attach(msgImage)
-#     counter += 1
 
 # msgText = MIMEText(string_message, 'html')
 # msgAlternative.attach(msgText)
@@ -53,12 +42,12 @@ class Transporter:
         self.sender = from_address
         self.receiver = to_address
         self.password = user_password
-        self.string_message = ""        
+        self.string_message = ""
         self.msg_text = MIMEMultipart('related')
 
     def build_message_text(self, subject_text=None,
-                           preamble_text=None,
-                           string_message=None):
+                           preamble_text="",
+                           string_message=""):
         """ build_message_text """
         self.string_message += string_message
 
@@ -69,19 +58,31 @@ class Transporter:
             self.string_message += '<img src="cid:image{}"><br>'.format(counter)
             file_pointer = open(image_name, 'rb')
             msg_image = MIMEImage(file_pointer.read(), _subtype="jpg")
-            file_pointer.close
+            file_pointer.close()
             msg_image.add_header('Content-ID', '<image{}>'.format(counter))
             self.msg_text.attach(msg_image)
             counter += 1
 
     def send_it(self):
         """ send it """
-        smtp_server = smptlib.SMTP('smtp.gmail.com', 587)
+        smtp_server = SMTP('smtp.gmail.com', 587)
         smtp_server.ehlo()
         smtp_server.starttls()
         smtp_server.ehlo()
-        smpt_server.login(self.sender, self.password)
-        smpt_server.sendmail(self.sender,
+        smtp_server.login(self.sender, self.password)
+        smtp_server.sendmail(self.sender,
                              self.receiver,
                              self.msg_text.as_string())
         smtp_server.close()
+
+
+if __name__ == "__main__":
+    FROM = sys.argv[1]
+    TO = sys.argv[2]
+    USER_PASSWORD = sys.argv[3]
+    SUBJECT = sys.argv[4]
+    IMAGES = sys.argv[5:]
+    T_OBJ = Transporter(FROM, TO, USER_PASSWORD)
+    T_OBJ.build_message_text(subject_text=SUBJECT)
+    T_OBJ.add_images(IMAGES)
+    T_OBJ.send_it()
