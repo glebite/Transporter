@@ -7,6 +7,7 @@ transporter - a specific type of emailer class
 # email clients that don't want to display the HTML.
 from smtplib import SMTP
 import sys
+import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
@@ -16,7 +17,7 @@ class Transporter:
     def __init__(self, from_address=None, to_address=None, user_password=None, subject=None):
         """ init function """
         self.msg_root = MIMEMultipart('related')
-        self.msg_root['From']  = from_address
+        self.msg_root['From'] = from_address
         self.msg_root['To'] = to_address
         self.msg_root['Subject'] = subject
         self.password = user_password
@@ -35,29 +36,30 @@ class Transporter:
         """ add_images """
         counter = 0
         string_message = "<br>{}<br>".format(self.string_message)
-        if not images:
-            return
-        else:
+        if images:
+            if isinstance(images, str):
+                images = [images]
             for image_name in images:
-                print(f'Working on {image_name}')
                 string_message += '<img src="cid:image{}"><br>{}<br>'.format(counter, image_name)
-                file_pointer = open(image_name, 'rb')
-                msg_image = MIMEImage(file_pointer.read(), _subtype="png")
-                file_pointer.close()
-                msg_image.add_header('Content-ID', '<image{}>'.format(counter))
-                self.msg_root.attach(msg_image)
-                counter += 1
-            self.msg_text = MIMEText(string_message, 'html')
-            self.msg_alternative.attach(self.msg_text)
-            print(self.msg_root)
+                if os.path.exists(image_name):
+                    file_pointer = open(image_name, 'rb')
+                    msg_image = MIMEImage(file_pointer.read(), _subtype="png")
+                    file_pointer.close()
+                    msg_image.add_header('Content-ID', '<image{}>'.format(counter))
+                    self.msg_root.attach(msg_image)
+                    counter += 1
+                else:
+                    print(f'File does not exist... {image_name}')
+        self.msg_text = MIMEText(string_message, 'html')
+        self.msg_alternative.attach(self.msg_text)
 
     def send_it(self):
         """ send it """
         smtp_server = SMTP('smtp.gmail.com', 587)
         smtp_server.ehlo()
         smtp_server.starttls()
-        smtp_server.ehlo
-        if all(v is not None for v in [self.msg_root['From'], self.msg_root['To'], self.password]):    
+        # smtp_server.ehlo
+        if all(v is not None for v in [self.msg_root['From'], self.msg_root['To'], self.password]): 
             smtp_server.login(self.msg_root['From'], self.password)
             smtp_server.sendmail(self.msg_root['From'],
                                  self.msg_root['To'],
