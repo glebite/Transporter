@@ -42,7 +42,8 @@ class Transporter:
                 print(f'images: {images}')
             for image_name in images:
                 if os.path.exists(image_name):
-                    string_message += '<img src="cid:image{}"><br>{}<br>'.format(counter, image_name)              
+                    string_message += '<img src=' \
+                    '"cid:image{}"><br>{}<br>'.format(counter, image_name)
                     file_pointer = open(image_name, 'rb')
                     msg_image = MIMEImage(file_pointer.read(), _subtype="png")
                     file_pointer.close()
@@ -60,7 +61,7 @@ class Transporter:
         smtp_server.ehlo()
         smtp_server.starttls()
         # smtp_server.ehlo
-        if all(v is not None for v in [self.msg_root['From'], self.msg_root['To'], self.password]): 
+        if all(v is not None for v in [self.msg_root['From'], self.msg_root['To'], self.password]):
             smtp_server.login(self.msg_root['From'], self.password)
             smtp_server.sendmail(self.msg_root['From'],
                                  self.msg_root['To'],
