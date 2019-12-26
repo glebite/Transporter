@@ -35,18 +35,21 @@ class Transporter:
         """ add_images """
         counter = 0
         string_message = "<br>{}<br>".format(self.string_message)
-        for image_name in images:
-            print(f'Working on {image_name}')
-            string_message += '<img src="cid:image{}"><br>{}<br>'.format(counter, image_name)
-            file_pointer = open(image_name, 'rb')
-            msg_image = MIMEImage(file_pointer.read(), _subtype="png")
-            file_pointer.close()
-            msg_image.add_header('Content-ID', '<image{}>'.format(counter))
-            self.msg_root.attach(msg_image)
-            counter += 1
-        self.msg_text = MIMEText(string_message, 'html')
-        self.msg_alternative.attach(self.msg_text)
-        print(self.msg_root)
+        if not images:
+            return
+        else:
+            for image_name in images:
+                print(f'Working on {image_name}')
+                string_message += '<img src="cid:image{}"><br>{}<br>'.format(counter, image_name)
+                file_pointer = open(image_name, 'rb')
+                msg_image = MIMEImage(file_pointer.read(), _subtype="png")
+                file_pointer.close()
+                msg_image.add_header('Content-ID', '<image{}>'.format(counter))
+                self.msg_root.attach(msg_image)
+                counter += 1
+            self.msg_text = MIMEText(string_message, 'html')
+            self.msg_alternative.attach(self.msg_text)
+            print(self.msg_root)
 
     def send_it(self):
         """ send it """

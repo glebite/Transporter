@@ -35,3 +35,8 @@ def test_Transporter_no_args_send():
     except ValueError as e:
         assert True
 
+@pytest.mark.test_id(5)
+def test_Transporter_no_images():
+    trans_obj = Transporter()
+    trans_obj.add_images()
+    assert 'Content-ID' not in trans_obj.msg_root 
