@@ -56,3 +56,11 @@ def test_Transporter_images_is_a_string_and_is_missing():
     trans_obj.add_images("missing_image.jpg")
     # if there are no images, then no Content-ID added to msg_root
     assert 'Content-ID' not in trans_obj.msg_root
+
+@pytest.mark.test_id(8)
+def test_Transporter_images_is_a_text_file():
+    trans_obj = Transporter()
+    trans_obj.add_images("test_emailer.py")
+    # if there are no images, then no Content-ID added to msg_root
+    print(trans_obj.msg_root)
+    assert 'Content-ID' not in trans_obj.msg_root

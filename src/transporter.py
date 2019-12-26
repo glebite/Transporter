@@ -39,9 +39,10 @@ class Transporter:
         if images:
             if isinstance(images, str):
                 images = [images]
+                print(f'images: {images}')
             for image_name in images:
-                string_message += '<img src="cid:image{}"><br>{}<br>'.format(counter, image_name)
                 if os.path.exists(image_name):
+                    string_message += '<img src="cid:image{}"><br>{}<br>'.format(counter, image_name)              
                     file_pointer = open(image_name, 'rb')
                     msg_image = MIMEImage(file_pointer.read(), _subtype="png")
                     file_pointer.close()
