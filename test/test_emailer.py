@@ -25,3 +25,13 @@ def test_Transporter_message_text():
     trans_obj = Transporter()
     trans_obj.build_message_text(string_message='this is a message')
     assert trans_obj.string_message == 'this is a message'
+
+@pytest.mark.test_id(4)
+def test_Transporter_no_args_send():
+    trans_obj = Transporter()
+    try:
+        trans_obj.send_it()
+        assert False
+    except ValueError as e:
+        assert True
+

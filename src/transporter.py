@@ -54,10 +54,13 @@ class Transporter:
         smtp_server.ehlo()
         smtp_server.starttls()
         smtp_server.ehlo
-        smtp_server.login(self.msg_root['From'], self.password)
-        smtp_server.sendmail(self.msg_root['From'],
-                             self.msg_root['To'],
-                             self.msg_root.as_string())
+        if all(v is not None for v in [self.msg_root['From'], self.msg_root['To'], self.password]):    
+            smtp_server.login(self.msg_root['From'], self.password)
+            smtp_server.sendmail(self.msg_root['From'],
+                                 self.msg_root['To'],
+                                 self.msg_root.as_string())
+        else:
+            raise ValueError
         smtp_server.close()
 
 
