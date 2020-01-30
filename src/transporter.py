@@ -11,6 +11,15 @@ import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
+import logger
+
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
+FH = logging.FileHandler('uatu.log')
+FORMATTER = logging.Formatter('%(asctime)s - %(name)s -%(levelname)s - %(message)s')
+FH.setFormatter(FORMATTER)
+FH.setLevel(logging.DEBUG)
+LOGGER.addHandler(FH)
 
 class Transporter:
     """ Transporter """
@@ -39,7 +48,7 @@ class Transporter:
         if images:
             if isinstance(images, str):
                 images = [images]
-                print(f'images: {images}')
+                LOGGER.info(f'images: {images}')
             for image_name in images:
                 if os.path.exists(image_name):
                     string_message += '<img src=' \
@@ -51,7 +60,7 @@ class Transporter:
                     self.msg_root.attach(msg_image)
                     counter += 1
                 else:
-                    print(f'File does not exist... {image_name}')
+                    LOGGER.info(f'File does not exist... {image_name}')
         self.msg_text = MIMEText(string_message, 'html')
         self.msg_alternative.attach(self.msg_text)
 
